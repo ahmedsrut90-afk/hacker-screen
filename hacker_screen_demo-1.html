@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>System Access</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;overflow:hidden;background:#000;color:#00ff41;font-family:"Courier New",monospace}
+canvas{position:fixed;inset:0;z-index:0}
+.screen{position:relative;z-index:2;height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;background:radial-gradient(circle,rgba(0,255,65,.08),rgba(0,0,0,.85))}
+.box{width:min(90%,700px);padding:30px;border:1px solid #00ff41;box-shadow:0 0 15px #00ff41,inset 0 0 20px rgba(0,255,65,.1);background:rgba(0,0,0,.75)}
+.title{font-size:clamp(25px,6vw,55px);text-shadow:0 0 15px #00ff41;margin-bottom:20px;animation:glitch .8s infinite}
+.status{font-size:18px;margin:12px 0}
+.loading{height:8px;border:1px solid #00ff41;margin:25px 0}
+.loading span{display:block;height:100%;width:0%;background:#00ff41;box-shadow:0 0 15px #00ff41;animation:load 4s forwards}
+#terminal{text-align:left;height:150px;overflow:hidden;font-size:13px;line-height:1.5}
+.cursor{animation:blink .5s infinite}
+@keyframes load{to{width:100%}}
+@keyframes blink{50%{opacity:0}}
+@keyframes glitch{0%,100%{transform:translate(0)}20%{transform:translate(-2px,1px)}40%{transform:translate(2px,-1px)}60%{transform:translate(-1px,2px)}80%{transform:translate(1px,-2px)}}
+</style>
+</head>
+<body>
+<canvas id="matrix"></canvas>
+<div class="screen">
+<div class="box">
+<div class="title">SYSTEM ACCESS</div>
+<div class="status">▸ INITIALIZING CONNECTION...</div>
+<div class="loading"><span></span></div>
+<div id="terminal"></div>
+<div class="status"><span id="result">PROCESSING...</span> <span class="cursor">█</span></div>
+</div>
+</div>
+<script>
+const canvas=document.getElementById("matrix"),ctx=canvas.getContext("2d");
+const chars="アカサタナハマヤラワ0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ#$%&@";
+const fontSize=16;let columns,drops;
+function resize(){canvas.width=innerWidth;canvas.height=innerHeight;columns=Math.floor(canvas.width/fontSize);drops=Array(columns).fill(1)}
+resize();addEventListener("resize",resize);
+function drawMatrix(){
+ctx.fillStyle="rgba(0,0,0,.08)";ctx.fillRect(0,0,canvas.width,canvas.height);
+ctx.fillStyle="#00ff41";ctx.font=fontSize+"px monospace";
+for(let i=0;i<drops.length;i++){
+const text=chars[Math.floor(Math.random()*chars.length)];
+ctx.fillText(text,i*fontSize,drops[i]*fontSize);
+if(drops[i]*fontSize>canvas.height&&Math.random()>.975)drops[i]=0;
+drops[i]++;
+}}
+setInterval(drawMatrix,35);
+
+const terminal=document.getElementById("terminal");
+const lines=[
+"> connecting to secure server...",
+"> encrypting communication...",
+"> checking system status...",
+"> generating access token...",
+"> bypass simulation initialized...",
+"> loading interface...",
+"> connection established..."
+];
+let line=0;
+function printLine(){
+if(line>=lines.length)return;
+const el=document.createElement("div");el.textContent=lines[line++];terminal.appendChild(el);
+if(terminal.children.length>7)terminal.removeChild(terminal.firstChild);
+setTimeout(printLine,600);
+}
+printLine();
+setTimeout(()=>document.getElementById("result").textContent="✓ ACCESS GRANTED",4500);
+</script>
+</body>
+</html>
