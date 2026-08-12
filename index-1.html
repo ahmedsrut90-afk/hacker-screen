@@ -1,0 +1,325 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>APEX Attendance Pro</title>
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+<style>
+:root{--bg:#0b1230;--panel:#121a3d;--panel2:#171f49;--line:#2a3568;--text:#f7f8ff;--muted:#aeb6d6;--purple:#7c3cff;--green:#00c99a;--orange:#ff9f22;--red:#ef4560;--blue:#4f7cff}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:linear-gradient(135deg,#090f2a,#121a42 55%,#0a1230);color:var(--text);font-family:Tahoma,Arial,sans-serif}body{direction:rtl}
+button,input,select{font:inherit}button{cursor:pointer}
+header{padding:18px 28px;background:#0b1130ee;border-bottom:1px solid #273260;position:sticky;top:0;z-index:5}
+.head{max-width:1500px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:15px}.brand h1{margin:0;font-size:29px}.brand p{margin:6px 0 0;color:var(--muted)}
+.date{background:#182143;border:1px solid #303b70;padding:11px 16px;border-radius:14px}
+.layout{max-width:1500px;margin:0 auto;padding:18px 20px 40px;display:grid;grid-template-columns:235px 1fr;gap:18px}
+.sidebar{background:#10183a;border:1px solid var(--line);border-radius:20px;padding:12px;height:max-content;position:sticky;top:92px}
+.navbtn{width:100%;text-align:right;background:transparent;border:1px solid transparent;color:#dce1f5;padding:13px;border-radius:13px;margin-bottom:6px}.navbtn:hover,.navbtn.active{background:#1b2552;border-color:#3a4782}.navbtn.active{box-shadow:inset -3px 0 var(--purple)}
+main{min-width:0}.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}.stat{background:linear-gradient(145deg,#182048,#111937);border:1px solid var(--line);border-radius:18px;padding:17px;min-height:112px}.label{color:#c7cde3;font-size:14px}.value{font-size:35px;font-weight:800;margin-top:14px}.vgreen{color:var(--green)}.vorange{color:var(--orange)}.vred{color:#ff526e}.vblue{color:#78a1ff}
+.actions{display:flex;flex-wrap:wrap;gap:9px;margin:14px 0}.btn{border:1px solid #3a4782;background:#1a2450;color:#fff;border-radius:13px;padding:11px 15px}.btn.primary{background:linear-gradient(135deg,var(--purple),#5428dc);border-color:#8d6aff}.btn.danger{background:#431a2a;border-color:#7b3048}.btn.success{background:#123d36;border-color:#197c68}.btn.small{padding:8px 10px;font-size:13px}
+.section{background:linear-gradient(145deg,#141c40,#0f1734);border:1px solid var(--line);border-radius:20px;padding:18px;margin-top:14px}.section h2{margin:0 0 15px;font-size:21px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.field label{display:block;color:#b8c0dd;font-size:13px;margin-bottom:7px}.field input,.field select,input,select{width:100%;background:#10183a;color:#fff;border:1px solid #34406f;border-radius:12px;padding:12px;outline:none}.field input:focus,input:focus,select:focus{border-color:#8060ff}
+.tablewrap{overflow:auto;border:1px solid #283362;border-radius:16px}table{width:100%;border-collapse:collapse;min-width:900px}th,td{padding:12px;border-bottom:1px solid #27315f;text-align:right;vertical-align:middle}th{background:#1a234b;color:#bfc7e5;position:sticky;top:0}td{color:#eef0fa}tr:hover td{background:#151e43}.avatar{width:48px;height:48px;border-radius:13px;object-fit:cover;background:#202a55;display:inline-block}.badge{display:inline-block;padding:5px 9px;border-radius:999px;background:#0d3d35;color:#00e0aa;border:1px solid #176c5b;font-size:12px}.badge.orange{background:#443018;color:#ffb34e;border-color:#77542b}.badge.red{background:#481b29;color:#ff6078;border-color:#7d3045}.badge.gray{background:#222b4d;color:#b6bed9;border-color:#3a466f}
+.searchrow{display:grid;grid-template-columns:1.4fr .8fr .8fr auto;gap:9px;margin-bottom:12px}
+.empty{padding:30px;text-align:center;color:#8f99ba}.small{font-size:12px;color:var(--muted)}.info{background:#141f48;border:1px solid #2e3b70;border-radius:14px;padding:12px;color:#cbd2e9;margin-bottom:12px}
+.schedule-days{display:grid;grid-template-columns:repeat(7,1fr);gap:7px;margin-top:8px}.day{padding:10px 5px;border-radius:11px;border:1px solid #34406f;background:#151e43;color:#cbd2e9}.day.active{background:#6535ee;border-color:#9a7aff;color:white}
+.modal{display:none;position:fixed;inset:0;background:#040719bb;backdrop-filter:blur(7px);z-index:20;align-items:center;justify-content:center;padding:15px}.modal.show{display:flex}.modalbox{width:min(850px,100%);max-height:92vh;overflow:auto;background:linear-gradient(145deg,#18214b,#101735);border:1px solid #3a4782;border-radius:22px;padding:20px;box-shadow:0 25px 80px #0008}.modalbox h3{margin-top:0}.modalhead{display:flex;justify-content:space-between;align-items:center;gap:10px}.close{background:#242e57;border:1px solid #3c4879;color:#fff;border-radius:10px;padding:8px 12px}
+.studenthero{display:grid;grid-template-columns:100px 1fr;gap:16px;align-items:center}.heroimg{width:100px;height:100px;border-radius:20px;object-fit:cover;background:#202a55}.metricgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin:15px 0}.metric{background:#131d42;border:1px solid #2b3769;border-radius:15px;padding:13px;text-align:center}.metric b{font-size:27px;display:block;margin-top:6px}
+.qrbox{background:white;padding:12px;border-radius:14px;display:inline-flex;align-items:center;justify-content:center}.printqr{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.qritem{background:#fff;color:#111;border-radius:14px;padding:14px;text-align:center}.qritem .qrcanvas{display:flex;justify-content:center;margin:10px}.photo-input{display:grid;grid-template-columns:90px 1fr;gap:12px;align-items:center}.preview{width:90px;height:90px;border-radius:16px;object-fit:cover;background:#202a55}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.kpi{background:#131d42;border:1px solid #2b3769;border-radius:15px;padding:15px;text-align:center}.kpi strong{display:block;font-size:28px;margin-top:6px}
+canvas{max-width:100%}
+@media(max-width:1100px){.layout{grid-template-columns:1fr}.sidebar{position:static;display:flex;overflow:auto;gap:6px}.navbtn{min-width:150px;margin:0}.stats{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:700px){header{padding:14px 12px}.head{display:block;text-align:center}.brand h1{font-size:23px}.date{display:inline-block;margin-top:10px}.layout{padding:10px;display:block}.sidebar{margin-bottom:10px}.stats{grid-template-columns:1fr 1fr;gap:8px}.stat{min-height:100px;padding:13px}.value{font-size:30px}.actions{display:grid;grid-template-columns:1fr 1fr}.grid2,.grid3{grid-template-columns:1fr}.searchrow{grid-template-columns:1fr 1fr}.searchrow input{grid-column:1/-1}.metricgrid,.kpis{grid-template-columns:1fr 1fr}.printqr{grid-template-columns:1fr 1fr}.modal{align-items:flex-end;padding:6px}.modalbox{width:100%;max-height:94vh;border-radius:22px 22px 0 0;padding:16px}.studenthero{grid-template-columns:75px 1fr}.heroimg{width:75px;height:75px}.schedule-days{grid-template-columns:repeat(4,1fr)}}
+@media(max-width:380px){.stats,.actions,.metricgrid,.kpis,.printqr{grid-template-columns:1fr}.searchrow{grid-template-columns:1fr}}
+@media print{body{background:#fff;color:#111}header,.sidebar,.actions,.noprint{display:none!important}.layout{display:block;padding:0}.section{border:0;box-shadow:none;background:#fff;color:#111}.tablewrap{border:1px solid #aaa}th,td{color:#111;background:#fff}.modal{display:none!important}}
+</style>
+</head>
+<body>
+
+<header><div class="head"><div class="brand"><h1>نظام حضور وغياب الطلاب</h1><p>نظام حضور وغياب الطلاب بالـ QR</p></div><div class="date" id="date"></div></div></header>
+<div class="layout">
+<aside class="sidebar">
+<button class="navbtn active" onclick="go('dashboard',this)">🏠 لوحة التحكم</button>
+<button class="navbtn" onclick="go('students',this)">👨‍🎓 الطلاب</button>
+<button class="navbtn" onclick="go('session',this)">📷 تسجيل الحضور</button>
+<button class="navbtn" onclick="go('reports',this)">📊 التقارير</button>
+<button class="navbtn" onclick="go('logs',this)">📋 سجل العمليات</button>
+</aside>
+<main id="app"></main>
+</div>
+
+<div class="modal" id="modal"><div class="modalbox"><div class="modalhead"><h3 id="modalTitle"></h3><button class="close" onclick="closeModal()">إغلاق</button></div><div id="modalBody"></div></div></div>
+
+<script>
+const KEY='apex_pro_v3';
+const state=JSON.parse(localStorage.getItem(KEY)||'null')||{
+ students:[], logs:[], sessions:[]
+};
+function save(){localStorage.setItem(KEY,JSON.stringify(state));}
+const days=['الأحد','الإثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
+function localDate(d=new Date()){return new Date(d.getTime()-d.getTimezoneOffset()*60000).toISOString().slice(0,10)}
+function nowTime(d=new Date()){return d.toLocaleTimeString('ar-EG',{hour:'2-digit',minute:'2-digit'})}
+function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
+function id(){return 'ST-'+String(state.students.length+1).padStart(6,'0')}
+function log(type,studentId,name,extra={}){state.logs.push({type,studentId:studentId||'',name:name||'',date:localDate(),time:nowTime(),...extra});save()}
+function photoPlaceholder(name='طالب'){return 'data:image/svg+xml;charset=UTF-8,'+encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300"><rect width="100%" height="100%" fill="#202a55"/><text x="50%" y="55%" dominant-baseline="middle" text-anchor="middle" fill="#cbd2e9" font-size="80">${esc(name[0]||'ط')}</text></svg>`)}
+function getStudent(id){return state.students.find(s=>s.id===id)}
+function scheduled(s,date){
+ const dow=new Date(date+'T00:00:00').getDay();
+ return (s.schedule||[]).filter(x=>Number(x.day)===dow)
+}
+function sessionKey(date,department,doctor,start){return [date,department.trim().toLowerCase(),doctor.trim().toLowerCase(),start].join('|')}
+function attendanceFor(sid,date,key){return state.logs.find(x=>x.type==='حضور'&&x.studentId===sid&&x.date===date&&x.sessionKey===key)}
+function eligibleStudents(session){
+ return state.students.filter(s=>
+   s.department.trim().toLowerCase()===session.department.trim().toLowerCase() &&
+   scheduled(s,session.date).some(x=>x.start===session.start)
+ )
+}
+function activeSession(){return state.sessions.find(s=>s.active)}
+function statusFor(s,session){
+ if(!eligibleStudents(session).some(x=>x.id===s.id)) return 'غير مستحق';
+ const a=attendanceFor(s.id,session.date,session.key);
+ if(a) return a.late?'متأخر':'حاضر';
+ const end=new Date(session.date+'T'+session.end);
+ if(new Date(session.date+'T00:00:00').toDateString()===new Date().toDateString() && new Date()<end) return 'لم يسجل';
+ return 'غائب';
+}
+function statsForStudent(s){
+ const sessions=state.sessions.filter(se=>se.active===false && se.date>=s.joinedAt && eligibleStudents(se).some(x=>x.id===s.id));
+ const present=sessions.filter(se=>attendanceFor(s.id,se.date,se.key)&&!attendanceFor(s.id,se.date,se.key).late).length;
+ const late=sessions.filter(se=>attendanceFor(s.id,se.date,se.key)?.late).length;
+ const absent=Math.max(0,sessions.length-present-late);
+ return {total:sessions.length,present,late,absent};
+}
+
+function navActive(el){document.querySelectorAll('.navbtn').forEach(x=>x.classList.remove('active'));if(el)el.classList.add('active')}
+function go(page,el){navActive(el); if(page==='dashboard')dashboard(); if(page==='students')showStudents(); if(page==='session')showSession(); if(page==='reports')showReports(); if(page==='logs')showLogs()}
+
+function dashboard(){
+ const t=localDate(), sessions=state.sessions.filter(s=>s.date===t), active=sessions.find(s=>s.active);
+ const eligible=active?eligibleStudents(active):[];
+ const present=active?eligible.filter(s=>attendanceFor(s.id,t,active.key)).length:0;
+ const late=active?eligible.filter(s=>attendanceFor(s.id,t,active.key)?.late).length:0;
+ const absent=active && new Date()>new Date(active.date+'T'+active.end)?eligible.filter(s=>!attendanceFor(s.id,t,active.key)).length:0;
+ document.querySelector('#app').innerHTML=`
+ <section class="stats">
+  <div class="stat"><div class="label">إجمالي الطلاب</div><div class="value">${state.students.length}</div></div>
+  <div class="stat"><div class="label">حضور المحاضرة الحالية</div><div class="value vgreen">${present}</div></div>
+  <div class="stat"><div class="label">التأخير</div><div class="value vorange">${late}</div></div>
+  <div class="stat"><div class="label">الغياب</div><div class="value vred">${absent||0}</div></div>
+  <div class="stat"><div class="label">محاضرات اليوم</div><div class="value vblue">${sessions.length}</div></div>
+ </section>
+ <div class="actions">
+  <button class="btn primary" onclick="go('session')">📷 تسجيل الحضور</button>
+  <button class="btn" onclick="go('students')">👨‍🎓 إدارة الطلاب</button>
+  <button class="btn" onclick="go('reports')">📊 التقارير</button>
+  <button class="btn" onclick="addStudent()">➕ إضافة طالب</button>
+ </div>
+ <section class="section">
+  <h2>📅 محاضرة اليوم</h2>
+  ${active?`<div class="info"><b>${esc(active.doctor)}</b> — قسم ${esc(active.department)} — ${active.start} إلى ${active.end}<br><span class="small">عدد الطلاب المستحقين: ${eligible.length}</span></div>
+  <button class="btn primary" onclick="go('session')">فتح شاشة تسجيل الحضور</button>`:
+  `<div class="empty">لا توجد محاضرة نشطة الآن. أنشئ محاضرة من شاشة تسجيل الحضور.</div>`}
+ </section>
+ `;
+}
+
+function showStudents(){
+ document.querySelector('#app').innerHTML=`
+ <section class="section">
+  <div class="actions" style="justify-content:space-between"><h2 style="margin:0">👨‍🎓 الطلاب</h2><button class="btn primary" onclick="addStudent()">➕ إضافة طالب</button></div>
+  <div class="searchrow">
+   <input id="studentSearch" placeholder="🔎 بحث بالاسم أو الكود أو القسم" oninput="renderStudents()">
+   <input id="departmentFilter" placeholder="القسم" oninput="renderStudents()">
+   <select id="statusFilter" onchange="renderStudents()"><option value="">كل الحالات</option><option value="حاضر">حاضر اليوم</option><option value="غير حاضر">لم يسجل اليوم</option></select>
+   <button class="btn" onclick="renderStudents()">تحديث</button>
+  </div>
+  <div id="studentTable"></div>
+ </section>`;
+ renderStudents();
+}
+function renderStudents(){
+ const q=(document.querySelector('#studentSearch')?.value||'').trim().toLowerCase();
+ const dep=(document.querySelector('#departmentFilter')?.value||'').trim().toLowerCase();
+ const sf=document.querySelector('#statusFilter')?.value||'';
+ let arr=state.students.filter(s=>(!q||[s.name,s.id,s.department].some(v=>(v||'').toLowerCase().includes(q)))&&(!dep||(s.department||'').toLowerCase().includes(dep)));
+ const active=activeSession();
+ if(sf)arr=arr.filter(s=>sf==='حاضر'?!!(active&&attendanceFor(s.id,active.date,active.key)):!(active&&attendanceFor(s.id,active.date,active.key)));
+ if(!arr.length){document.querySelector('#studentTable').innerHTML='<div class="empty">لا يوجد طلاب مطابقون للبحث.</div>';return}
+ document.querySelector('#studentTable').innerHTML=`<div class="tablewrap"><table><thead><tr><th>الصورة</th><th>الطالب</th><th>الكود</th><th>القسم</th><th>الحضور</th><th>الغياب</th><th>الأدوات</th></tr></thead><tbody>${arr.map(s=>{
+ const st=statsForStudent(s);
+ return `<tr>
+ <td><img class="avatar" src="${s.photo||photoPlaceholder(s.name)}"></td>
+ <td><b>${esc(s.name)}</b><div class="small">${esc(s.phone||'')}</div></td>
+ <td><b>${esc(s.id)}</b></td>
+ <td>${esc(s.department)}</td>
+ <td><span class="badge">${st.present}</span></td>
+ <td><span class="badge red">${st.absent}</span></td>
+ <td style="white-space:nowrap">
+  <button class="btn small" onclick="studentDetails('${s.id}')">📊</button>
+  <button class="btn small" onclick="editStudent('${s.id}')">✏️</button>
+  <button class="btn small" onclick="printStudentQR('${s.id}')">🔳 QR</button>
+  <button class="btn small danger" onclick="deleteStudent('${s.id}')">🗑️</button>
+ </td></tr>`}).join('')}</tbody></table></div>`;
+}
+
+function addStudent(editId=null){
+ const s=editId?getStudent(editId):null;
+ const daysSet=new Set((s?.schedule||[]).map(x=>String(x.day)));
+ document.querySelector('#modalTitle').textContent=s?'✏️ تعديل بيانات الطالب':'➕ إضافة طالب جديد';
+ document.querySelector('#modalBody').innerHTML=`
+ <div class="photo-input"><img id="photoPreview" class="preview" src="${s?.photo||photoPlaceholder(s?.name||'طالب')}"><div><label class="small">صورة الطالب</label><input id="photoFile" type="file" accept="image/*" onchange="previewPhoto(event)"></div></div>
+ <div class="grid2" style="margin-top:12px">
+  <div class="field"><label>اسم الطالب</label><input id="fName" value="${esc(s?.name||'')}" placeholder="اسم الطالب"></div>
+  <div class="field"><label>كود الطالب</label><input id="fId" value="${esc(s?.id||id())}" ${s?'readonly':''}></div>
+  <div class="field"><label>القسم — كتابة يدوية</label><input id="fDepartment" value="${esc(s?.department||'')}" placeholder="مثال: البرمجة"></div>
+  <div class="field"><label>رقم الهاتف</label><input id="fPhone" value="${esc(s?.phone||'')}" placeholder="اختياري"></div>
+ </div>
+ <div class="field" style="margin-top:12px"><label>أيام المحاضرات</label><div class="schedule-days">${days.map((d,i)=>`<button type="button" class="day ${daysSet.has(String(i))?'active':''}" id="sd${i}" onclick="this.classList.toggle('active')">${d}</button>`).join('')}</div></div>
+ <div class="grid2" style="margin-top:12px"><div class="field"><label>وقت بداية المحاضرة</label><input id="fStart" type="time" value="${s?.schedule?.[0]?.start||'18:00'}"></div><div class="field"><label>وقت نهاية المحاضرة</label><input id="fEnd" type="time" value="${s?.schedule?.[0]?.end||'20:00'}"></div></div>
+ <button class="btn primary" style="width:100%;margin-top:14px" onclick="saveStudent('${editId||''}')">💾 حفظ البيانات</button>`;
+ document.querySelector('#modal').classList.add('show');
+}
+let photoData='';
+function previewPhoto(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{photoData=r.result;document.querySelector('#photoPreview').src=photoData};r.readAsDataURL(f)}
+function saveStudent(editId){
+ const name=document.querySelector('#fName').value.trim(), code=document.querySelector('#fId').value.trim().toUpperCase(), department=document.querySelector('#fDepartment').value.trim(), phone=document.querySelector('#fPhone').value.trim();
+ if(!name||!code||!department){alert('اكتب اسم الطالب والكود والقسم');return}
+ const selected=days.map((_,i)=>document.querySelector('#sd'+i).classList.contains('active')?i:null).filter(x=>x!==null);
+ const start=document.querySelector('#fStart').value,end=document.querySelector('#fEnd').value;
+ if(selected.length&&!start){alert('حدد وقت بداية المحاضرة');return}
+ if(!editId&&state.students.some(s=>s.id===code)){alert('الكود مستخدم بالفعل');return}
+ if(editId){
+  const s=getStudent(editId);s.name=name;s.department=department;s.phone=phone;s.schedule=selected.map(day=>({day,start,end}));if(photoData)s.photo=photoData;log('تعديل طالب',s.id,s.name)
+ }else{
+  const s={id:code,name,department,phone,photo:photoData||'',joinedAt:localDate(),schedule:selected.map(day=>({day,start,end}))};state.students.push(s);log('إضافة طالب',s.id,s.name)
+ }
+ photoData='';save();closeModal();showStudents();
+}
+function editStudent(id){photoData='';addStudent(id)}
+function deleteStudent(id){
+ const s=getStudent(id);if(!s)return;
+ if(!confirm('حذف الطالب '+s.name+'؟ سيتم الاحتفاظ بسجلاته التاريخية.'))return;
+ state.students=state.students.filter(x=>x.id!==id);log('حذف طالب',id,s.name);showStudents();
+}
+function studentDetails(id){
+ const s=getStudent(id), st=statsForStudent(s);
+ document.querySelector('#modalTitle').textContent='📊 ملف الطالب';
+ document.querySelector('#modalBody').innerHTML=`
+ <div class="studenthero"><img class="heroimg" src="${s.photo||photoPlaceholder(s.name)}"><div><h2 style="margin:0">${esc(s.name)}</h2><div>${esc(s.id)} — ${esc(s.department)}</div><div class="small">${esc(s.phone||'')}</div></div></div>
+ <div class="metricgrid"><div class="metric"><span>الحضور</span><b class="vgreen">${st.present}</b></div><div class="metric"><span>الغياب</span><b class="vred">${st.absent}</b></div><div class="metric"><span>التأخير</span><b class="vorange">${st.late}</b></div><div class="metric"><span>المحاضرات</span><b>${st.total}</b></div></div>
+ <div class="info">📅 ${s.schedule?.length?s.schedule.map(x=>days[x.day]+' '+x.start+'-'+x.end).join(' — '):'لا توجد مواعيد محددة'}</div>
+ <div class="actions"><button class="btn" onclick="printStudentQR('${s.id}')">🖨️ طباعة QR فقط</button><button class="btn" onclick="editStudent('${s.id}')">✏️ تعديل</button></div>
+ <h3>سجل الحضور والغياب</h3><div class="tablewrap"><table><thead><tr><th>التاريخ</th><th>الدكتور</th><th>القسم</th><th>الوقت</th><th>الحالة</th></tr></thead><tbody>
+ ${state.sessions.filter(se=>se.date>=s.joinedAt&&eligibleStudents(se).some(x=>x.id===s.id)).slice().reverse().map(se=>{const a=attendanceFor(s.id,se.date,se.key);return `<tr><td>${se.date}</td><td>${esc(se.doctor)}</td><td>${esc(se.department)}</td><td>${a?.time||'—'}</td><td>${a?(a.late?'<span class="badge orange">متأخر</span>':'<span class="badge">حاضر</span>'):'<span class="badge red">غائب</span>'}</td></tr>`}).join('')||'<tr><td colspan="5" class="empty">لا توجد محاضرات مسجلة بعد</td></tr>'}
+ </tbody></table></div>`;
+ document.querySelector('#modal').classList.add('show');
+}
+
+function showSession(){
+ const active=activeSession();
+ document.querySelector('#app').innerHTML=`
+ <section class="section">
+ <h2>📷 تسجيل حضور المحاضرة</h2>
+ <div class="info">اكتب اسم الدكتور والقسم يدويًا. عند تحديد القسم سيظهر الطلاب المسجلون في هذا القسم فقط، وسيقبل QR الطالب إذا كان لديه محاضرة في اليوم والوقت المحددين.</div>
+ <div class="grid2">
+  <div class="field"><label>اسم الدكتور — كتابة يدوية</label><input id="sessDoctor" value="${esc(active?.doctor||'')}" placeholder="د. أحمد محمد"></div>
+  <div class="field"><label>القسم — كتابة يدوية</label><input id="sessDepartment" value="${esc(active?.department||'')}" placeholder="البرمجة" oninput="previewSessionStudents()"></div>
+  <div class="field"><label>التاريخ</label><input id="sessDate" type="date" value="${active?.date||localDate()}"></div>
+  <div class="field"><label>بداية المحاضرة</label><input id="sessStart" type="time" value="${active?.start||'18:00'}"></div>
+  <div class="field"><label>نهاية المحاضرة</label><input id="sessEnd" type="time" value="${active?.end||'20:00'}"></div>
+  <div class="field"><label>سماح التأخير بالدقائق</label><input id="grace" type="number" min="0" value="${active?.grace??10}"></div>
+ </div>
+ <div class="actions"><button class="btn primary" onclick="startSession()">▶️ بدء المحاضرة</button>${active?'<button class="btn danger" onclick="endSession()">⏹️ إنهاء المحاضرة</button>':''}</div>
+ <div id="sessionInfo"></div>
+ </section>
+ <section class="section"><h2>📷 الكاميرا</h2><video id="video" playsinline style="width:100%;max-height:380px;background:#050817;border-radius:18px;object-fit:cover"></video><div class="actions"><button class="btn primary" onclick="startCamera()">تشغيل الكاميرا</button><button class="btn" onclick="stopCamera()">إيقاف الكاميرا</button></div><input id="manualCode" placeholder="أدخل كود الطالب يدويًا" onkeydown="if(event.key==='Enter')scanCode(this.value)"><p class="small" id="cameraStatus">ابدأ محاضرة ثم شغّل الكاميرا.</p></section>
+ <section class="section"><h2>👥 طلاب القسم</h2><div id="sessionStudents"></div></section>`;
+ previewSessionStudents(); if(active) renderSessionInfo(active);
+}
+function previewSessionStudents(){
+ const dep=(document.querySelector('#sessDepartment')?.value||'').trim().toLowerCase(), date=document.querySelector('#sessDate')?.value||localDate(), start=document.querySelector('#sessStart')?.value||'18:00';
+ const arr=state.students.filter(s=>!dep||s.department.trim().toLowerCase()===dep).filter(s=>!start||scheduled(s,date).some(x=>x.start===start));
+ const box=document.querySelector('#sessionStudents');if(!box)return;
+ box.innerHTML=arr.length?`<div class="tablewrap"><table><thead><tr><th>الصورة</th><th>الطالب</th><th>الكود</th><th>الحالة</th></tr></thead><tbody>${arr.map(s=>`<tr><td><img class="avatar" src="${s.photo||photoPlaceholder(s.name)}"></td><td>${esc(s.name)}</td><td>${s.id}</td><td>${getPreviewStatus(s,date,start)}</td></tr>`).join('')}</tbody></table></div>`:'<div class="empty">اكتب القسم ليظهر الطلاب المسجلون فيه ولديهم محاضرة في هذا اليوم والوقت.</div>';
+}
+function getPreviewStatus(s,date,start){
+ const se=state.sessions.find(x=>x.date===date&&x.department.trim().toLowerCase()===s.department.trim().toLowerCase()&&x.start===start&&x.active);if(!se)return '<span class="badge gray">جاهز</span>';
+ const a=attendanceFor(s.id,date,se.key);return a?(a.late?'<span class="badge orange">متأخر</span>':'<span class="badge">حاضر</span>'):'<span class="badge gray">لم يسجل</span>';
+}
+function startSession(){
+ const doctor=document.querySelector('#sessDoctor').value.trim(),department=document.querySelector('#sessDepartment').value.trim(),date=document.querySelector('#sessDate').value,start=document.querySelector('#sessStart').value,end=document.querySelector('#sessEnd').value,grace=Number(document.querySelector('#grace').value||10);
+ if(!doctor||!department||!date||!start||!end){alert('أكمل بيانات المحاضرة');return}
+ state.sessions.forEach(s=>s.active=false);
+ const se={date,doctor,department,start,end,grace,active:true};se.key=sessionKey(date,department,doctor,start);state.sessions.push(se);save();log('بدء محاضرة','',doctor,{department,sessionKey:se.key});showSession();
+}
+function endSession(){const a=activeSession();if(!a)return;a.active=false;save();log('إنهاء محاضرة','',a.doctor,{department:a.department,sessionKey:a.key});showSession()}
+let cameraStream=null,cameraTimer=null;
+async function startCamera(){
+ try{
+  cameraStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'}}});
+  const v=document.querySelector('#video');v.srcObject=cameraStream;await v.play();document.querySelector('#cameraStatus').textContent='وجّه الكاميرا إلى QR الطالب';
+  if('BarcodeDetector' in window){const detector=new BarcodeDetector({formats:['qr_code']});const loop=async()=>{if(!cameraStream)return;try{const c=await detector.detect(v);if(c[0]){scanCode(c[0].rawValue);setTimeout(loop,900);return}}catch(e){}cameraTimer=requestAnimationFrame(loop)};loop()}
+ }catch(e){document.querySelector('#cameraStatus').textContent='تعذر تشغيل الكاميرا. استخدم الكود اليدوي أو اسمح للمتصفح بالكاميرا.'}
+}
+function stopCamera(){if(cameraStream){cameraStream.getTracks().forEach(t=>t.stop());cameraStream=null}if(cameraTimer)cancelAnimationFrame(cameraTimer)}
+function scanCode(code){const a=activeSession();if(!a){alert('ابدأ المحاضرة أولًا');return}const s=getStudent(String(code).trim().toUpperCase());if(!s){alert('كود الطالب غير موجود');return}
+ if(s.department.trim().toLowerCase()!==a.department.trim().toLowerCase()){alert('هذا الطالب ليس من قسم المحاضرة الحالية');return}
+ if(!scheduled(s,a.date).some(x=>x.start===a.start)){alert('الطالب ليس لديه محاضرة في هذا اليوم والوقت');return}
+ if(attendanceFor(s.id,a.date,a.key)){alert('⚠️ تم تسجيل حضور الطالب مسبقًا في هذه المحاضرة');return}
+ const current=new Date(), start=new Date(a.date+'T'+a.start), grace=new Date(start.getTime()+a.grace*60000), late=current>grace;
+ state.logs.push({type:'حضور',studentId:s.id,name:s.name,date:a.date,time:nowTime(),late,sessionKey:a.key,department:a.department,doctor:a.doctor});save();
+ alert(`${late?'⏰ تم تسجيل الطالب متأخرًا':'✅ تم تسجيل الحضور'}\n${s.name}`);previewSessionStudents();renderSessionInfo(a);
+}
+function renderSessionInfo(a){
+ const arr=eligibleStudents(a),p=arr.filter(s=>attendanceFor(s.id,a.date,a.key)),late=p.filter(s=>attendanceFor(s.id,a.date,a.key)?.late),end=new Date(a.date+'T'+a.end),abs=new Date()>end?arr.filter(s=>!attendanceFor(s.id,a.date,a.key)).length:0;
+ const box=document.querySelector('#sessionInfo');if(box)box.innerHTML=`<div class="kpis"><div class="kpi">المستحقون<strong>${arr.length}</strong></div><div class="kpi">الحضور<strong class="vgreen">${p.length-late.length}</strong></div><div class="kpi">التأخير<strong class="vorange">${late.length}</strong></div><div class="kpi">الغياب<strong class="vred">${abs}</strong></div></div>`;
+}
+
+function showReports(){
+ document.querySelector('#app').innerHTML=`
+ <section class="section">
+  <h2>📊 التقرير اليومي</h2>
+  <div class="searchrow"><input id="rDate" type="date" value="${localDate()}"><input id="rDepartment" placeholder="القسم — اختياري"><input id="rDoctor" placeholder="الدكتور — اختياري"><button class="btn primary" onclick="renderReport()">عرض</button></div>
+  <div class="actions noprint"><button class="btn" onclick="window.print()">🖨️ طباعة التقرير</button></div>
+  <div id="report"></div>
+ </section>`;
+ renderReport();
+}
+function renderReport(){
+ const date=document.querySelector('#rDate').value,dep=(document.querySelector('#rDepartment').value||'').trim().toLowerCase(),doc=(document.querySelector('#rDoctor').value||'').trim().toLowerCase();
+ let sessions=state.sessions.filter(s=>s.date===date&&(!dep||s.department.toLowerCase().includes(dep))&&(!doc||s.doctor.toLowerCase().includes(doc)));
+ if(!sessions.length){document.querySelector('#report').innerHTML='<div class="empty">لا توجد محاضرات مسجلة لهذا التاريخ/الفلاتر.</div>';return}
+ document.querySelector('#report').innerHTML=sessions.map(se=>{
+  const arr=eligibleStudents(se),present=arr.filter(s=>attendanceFor(s.id,date,se.key)),late=present.filter(s=>attendanceFor(s.id,date,se.key)?.late),ended=new Date()>new Date(se.date+'T'+se.end),abs=ended?arr.filter(s=>!attendanceFor(s.id,date,se.key)):[],rate=arr.length?Math.round(present.length/arr.length*100):0;
+  return `<section class="section" style="margin-top:10px"><div class="kpis"><div class="kpi">الطلاب<strong>${arr.length}</strong></div><div class="kpi">الحضور<strong class="vgreen">${present.length-late.length}</strong></div><div class="kpi">التأخير<strong class="vorange">${late.length}</strong></div><div class="kpi">الغياب<strong class="vred">${abs.length}</strong></div></div>
+  <div class="info" style="margin-top:12px"><b>الدكتور:</b> ${esc(se.doctor)} &nbsp; <b>القسم:</b> ${esc(se.department)} &nbsp; <b>الوقت:</b> ${se.start} - ${se.end} &nbsp; <b>نسبة الحضور:</b> ${rate}%</div>
+  <div class="tablewrap"><table><thead><tr><th>الصورة</th><th>الطالب</th><th>الكود</th><th>القسم</th><th>QR</th><th>وقت الحضور</th><th>الحالة</th></tr></thead><tbody>${arr.map(s=>{const a=attendanceFor(s.id,date,se.key);return `<tr><td><img class="avatar" src="${s.photo||photoPlaceholder(s.name)}"></td><td>${esc(s.name)}</td><td>${s.id}</td><td>${esc(s.department)}</td><td><span class="small">${s.id}</span></td><td>${a?.time||'—'}</td><td>${a?(a.late?'<span class="badge orange">متأخر</span>':'<span class="badge">حاضر</span>'):ended?'<span class="badge red">غائب</span>':'<span class="badge gray">لم يسجل بعد</span>'}</td></tr>`}).join('')}</tbody></table></div></section>`
+ }).join('');
+}
+function showLogs(){
+ document.querySelector('#app').innerHTML=`<section class="section"><h2>📋 سجل العمليات التلقائي</h2><div class="tablewrap"><table><thead><tr><th>التاريخ</th><th>الوقت</th><th>العملية</th><th>الاسم</th><th>التفاصيل</th></tr></thead><tbody>${state.logs.slice().reverse().map(x=>`<tr><td>${x.date}</td><td>${x.time}</td><td>${esc(x.type)}</td><td>${esc(x.name)}</td><td>${esc(x.department||'')} ${esc(x.doctor||'')}</td></tr>`).join('')||'<tr><td colspan="5" class="empty">لا يوجد سجل</td></tr>'}</tbody></table></div></section>`;
+}
+function printStudentQR(id){
+ const s=getStudent(id);if(!s)return;
+ document.querySelector('#modalTitle').textContent='🔳 QR الطالب';
+ document.querySelector('#modalBody').innerHTML=`<div class="printqr" id="qrPrintArea"><div class="qritem"><h3>${esc(s.name)}</h3><div>${esc(s.id)}</div><div>${esc(s.department)}</div><div class="qrcanvas" id="qr_${s.id}"></div></div></div><button class="btn primary noprint" style="width:100%;margin-top:14px" onclick="printQRWindow('${s.id}')">🖨️ طباعة QR فقط</button>`;
+ document.querySelector('#modal').classList.add('show');
+ new QRCode(document.querySelector('#qr_'+s.id),{text:s.id,width:180,height:180,colorDark:'#111',colorLight:'#fff',correctLevel:QRCode.CorrectLevel.H});
+}
+function printQRWindow(id){
+ const s=getStudent(id),w=window.open('','_blank','width=500,height=650');if(!w)return;
+ w.document.write(`<html dir="rtl"><head><title>QR ${esc(s.name)}</title><style>body{text-align:center;font-family:Arial;padding:30px}img{max-width:240px}</style></head><body><h2>${esc(s.name)}</h2><h3>${s.id}</h3><p>${esc(s.department)}</p><div id="q"></div><script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"><\/script><script>new QRCode(document.getElementById('q'),{text:${JSON.stringify(s.id)},width:240,height:240});setTimeout(()=>print(),700)<\/script></body></html>`);w.document.close();
+}
+function closeModal(){document.querySelector('#modal').classList.remove('show');photoData=''}
+document.querySelector('#date').textContent=new Date().toLocaleDateString('ar-EG',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+if(!state.students.length){
+ state.students=[
+  {id:'ST-000001',name:'أحمد محمد',department:'البرمجة',phone:'',photo:'',joinedAt:localDate(),schedule:[{day:0,start:'18:00',end:'20:00'},{day:2,start:'18:00',end:'20:00'}]},
+  {id:'ST-000002',name:'محمد علي',department:'الشبكات',phone:'',photo:'',joinedAt:localDate(),schedule:[{day:1,start:'17:00',end:'19:00'}]}
+ ];save();
+}
+dashboard();
+</script>
+</body></html>
